@@ -54,7 +54,7 @@ module cu(input clk, reset, input [255:0] data, input [63:0]data_length, output 
             byte_rdy <=0;
             byte_stop <=1;
             end
-            end else begin
+        end else begin
             if(state==1)begin
                 if(input_length>0) begin
                     data_str = data_str << 8;
