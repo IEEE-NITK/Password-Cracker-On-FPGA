@@ -86,7 +86,6 @@ module interative_processing(clk,rst,w,k,counter_iteration,padding_done,a_out,b_
 			f_temp= e_out;
 			g_temp= f_out;
 	 		h_temp= g_out;
-
 			a_out=a_temp;
 			b_out=b_temp;
 			c_out=c_temp;
