@@ -1,0 +1,54 @@
+MD4 Algorithm
+Appending Bits:
+The message of b bits(m0m1m2….mb-1) which is a non-negative number is padded so that its length 448 mod 512. Padding is performed as follows: a single 1 bit is appended to the message and then enough zero bits are appended so that the length in bits of the padded message is congruent to 448 mod 512.
+After padding is performed, the 64-bit representation of the message of b bits is appended to the previous result. If the word is greater than 2^64 then the lower order of 64 bits are appended. Now the message is of length 512 bits. The word is made into N words where N is a multiple of 16. M[0….N-1] represents the words.
+
+Initialising an MD Buffer:
+A 4-word buffer A, B, C and D were each of them are a 32-bit register is used to compute the digest.
+A: 01 23 45 67
+B: 89 ab cd ef
+C: fe dc ba 98
+D: 76 54 32 10
+Processing the message in 16-word blocks:
+Auxiliary functions which take three 32-bit words and output one 32-bit word are defined as,
+f(X, Y, Z) = XY v (~X)Z
+g(X, Y, Z) = XY v XZ v YZ
+h(X, Y, Z) = X⊕Y⊕Z
+f is a function which selects Y if X else it selects Z if not X
+g is a function which has one in a position if at least two of x, y or z are one
+h is a function which calculates the xor of the bits of x, y and z(parity checker)
+Round1:
+A = (A + f(B, C, D) + X[i] + K[i]) << s
+Here A, B, C and D are cycled through 16 times as shown,
+D = (A + f(A, B, C) + X[i] + K[i]) << s
+C = (C + f(D, A, B) + X[i] + K[i]) << s
+B = (B + f(C, D, A) + X[i] + K[i]) << s
+K[i] = 0
+X[i] = 0, 1, …., 15
+s = 3, 7, 11, 19
+Round 2:
+A = (A + g(B, C, D) + X[i] + K[i]) << s
+Here A, B, C and D are cycled through 16 times as shown,
+D = (A + g(A, B, C) + X[i] + K[i]) << s
+C = (C + g(D, A, B) + X[i] + K[i]) << s
+B = (B + g(C, D, A) + X[i] + K[i]) << s
+K[i] = 5A82799
+X[i] = 0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15
+s = 3, 5, 9, 13
+Round 3:
+A = (A + h(B, C, D) + X[i] + K[i]) << s
+Here A, B, C and D are cycled through 16 times as shown,
+D = (A + h(A, B, C) + X[i] + K[i]) << s
+C = (C + h(D, A, B) + X[i] + K[i]) << s
+B = (B + h(C, D, A) + X[i] + K[i]) << s
+K[i] = 6ED9EBA1
+X[i] = 0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15
+s = 3, 9, 11, 15
+Outputs of A, B, C and D are stored as AA, BB, CC and DD respectively
+Then perform the following additions,
+A = A + AA
+B = B + BB
+C = C + CC
+D = D + DD
+Output:
+The message digest produced is a 128-bit word which is stored with the lower order byte of A and ends with the higher order byte of D
