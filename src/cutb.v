@@ -21,7 +21,8 @@
 
 
 module cutb(output overflow_err,
-    output [254:0]Hash_Digest
+    output [254:0]Hash_Digest,
+    output hashing_done
     );
     
 reg reset, byte_rdy,byte_stop, clk, start, ready;
@@ -29,7 +30,7 @@ reg [63:0] data_length;
 reg [255:0] data;
 wire overflow_err;
 wire [255:0]Hash_Digest;
-cu  cracking_unit(clk, reset, data, data_length,Hash_Digest, overflow_err);
+cu  cracking_unit(clk, reset, data, data_length,Hash_Digest, overflow_err, hashing_done);
 initial forever #5 clk = ~clk;
 initial
 begin
