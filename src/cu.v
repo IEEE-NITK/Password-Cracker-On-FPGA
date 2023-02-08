@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module cu(input clk, reset, input [255:0] data, input [63:0]data_length, output [255:0] Hash_Digest, output overflow_err);
+module cu(input clk, reset, input [255:0] data, input [63:0]data_length, output [255:0] Hash_Digest, output overflow_err, output hashing_done);
     reg byte_rdy, byte_stop;
     reg [7:0] data_in;
     reg [255:0] data_str;
@@ -29,7 +29,7 @@ module cu(input clk, reset, input [255:0] data, input [63:0]data_length, output 
     reg [1:0] state;
     reg [63:0] input_length;
     top_sha sha256cu(clk,rst,byte_rdy,byte_stop,data_in [7:0],
-					overflow_err,Hash_Digest);
+					overflow_err,Hash_Digest, hashing_done);
     always @(posedge clk)begin
     if(reset==0) begin
         input_length <=data_length;

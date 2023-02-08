@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module top_sha(input clk,rst,byte_rdy,byte_stop,input [7:0] data_in,
-					output overflow_err,output [255:0] Hash_Digest
+					output overflow_err,output [255:0] Hash_Digest, output hashing_done
     );
 	 
 	 reg [31:0] K;
@@ -33,7 +33,7 @@ module top_sha(input clk,rst,byte_rdy,byte_stop,input [7:0] data_in,
 	 m_pader_parser			m_pad_pars(clk,rst,byte_rdy,byte_stop,data_in,overflow_err,flag_0_15,data_in_padd,padding_done,strt_a_h);
 	 m_scheduler 				msg_scheduler(clk,rst,flag_0_15,padding_done,data_in_padd,w_data_schdulr,counter_iteration);
 	 interative_processing	iter_processing(clk,rst,w_data_schdulr,K,counter_iteration,padding_done,a_out,b_out,c_out,d_out,e_out,f_out,g_out,h_out);
-	 m_digest					m_out_digest(clk,rst,counter_iteration,a_out,b_out,c_out,d_out,e_out,f_out,g_out,h_out,Hash_Digest);
+	 m_digest					m_out_digest(clk,rst,counter_iteration,a_out,b_out,c_out,d_out,e_out,f_out,g_out,h_out,Hash_Digest, hashing_done);
 	 
 	 always@(posedge clk)
 	 begin
