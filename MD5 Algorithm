@@ -1,31 +1,57 @@
 `timescale 1ns / 1ps
 
-module algo(
-input clk,rst,
-input[511:0]text,
-output reg [127:0]hash,
-output reg [31:0] next_a,next_b,next_c,next_d
-    );
 
+module test(
+input clk,rst,
+input [31:0]password, //password in hex ASCII
+output reg[63:0] len, // length of hex password
+output reg[511:0]text, //padded and appended password
+output reg [31:0] next_a,next_b,next_c,next_d, //next state buffers
+output reg [127:0]hash); //generated hash
+
+
+reg [63:0]msb;
+reg[32:0]pad;
+integer k;
+   
 reg [31:0]M[15:0];
 reg [31:0]msg;
-reg [31:0]t;
-reg [31:0] a,b,c,d,func;
+reg [31:0]t, func;
+reg [31:0] a,b,c,d;
 reg [31:0] aux,rotate1,rotate2,step;
 reg [7:0]s;
 parameter add= 'h100000000;
 parameter A='h67452301,B='hefcdab89,C='h98badcfe,D='h10325476;
 reg [31:0] next_A,next_B,next_C,next_D;
+
 always @(posedge clk or posedge rst)//rst and step increment+initialize
 begin
 
-   if(rst)
+   if(rst==1)
    begin
+   
+       for(k=0;k<32;k=k+1)
+       begin
+       if(password[k]==1)
+       msb=k;
+       end
+       if(msb%8==7)
+       len=msb+1;
+       else 
+       len=msb+8-(msb%8);
+       
+       pad=447-len;
+       text={password,1'b1};
+       for(k=0;k<pad;k=k+1)
+       text={text,1'b0};
+       text={text,len};
+   
      a='h67452301;
      b='hefcdab89;
      c='h98badcfe;
      d='h10325476;
      step=0;
+     
    M[0]=text[511:480];  //initializing before all rounds and operations
    M[1]=text[479:448]; 
    M[2]=text[447:416]; 
@@ -45,11 +71,14 @@ begin
    end 	   
    else
    begin
+   if(step<63)
+     begin
      step=step+1;
      a=next_a;
      b=next_b;
      c=next_c;
      d=next_d;
+     end
    end
 end  
 
@@ -322,9 +351,10 @@ func=(b^c^d);
 else //i
 func=(c^(b|~d));
 
+
 aux=(((((a+func)%add)+msg)%add)+t)%add;
 rotate1=aux << s;
-rotate2=aux >> (32-s);
+rotate2=aux >> (32-s); 
 next_b=(b+(rotate1 | rotate2))%add;
 next_a=d;
 next_c=b;
