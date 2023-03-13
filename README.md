@@ -19,15 +19,15 @@ This repository contains a password cracker implemented in Verilog that performs
 ### MD5 Algorithms
 - MD-5 is a cryptographic hash function algorithm that takes the message as input of any length and changes it into a fixed-length message.
 - The algo involves four main steps namely-
-    - a. Appending Padding bits- Padding means adding extra bits to the original message.
-    - b. Appending Length bits- After padding, 64 bits are inserted at the end, which is used to record the original input length. 
-    - c. Initializing MD buffers- A four-word buffer (A, B, C, D) is used to compute the values for the message digest.
-    - d. Processing each block- Each 512-bit block gets broken down further into 16 sub-blocks of 32 bits each. There are         four rounds of operations, with each round utilizing all the sub-blocks, the buffers, and a constant array value. 
+    - Appending Padding bits- Padding means adding extra bits to the original message.
+    - Appending Length bits- After padding, 64 bits are inserted at the end, which is used to record the original input length. 
+    - Initializing MD buffers- A four-word buffer (A, B, C, D) is used to compute the values for the message digest.
+    - Processing each block- Each 512-bit block gets broken down further into 16 sub-blocks of 32 bits each. There are         four rounds of operations, with each round utilizing all the sub-blocks, the buffers, and a constant array value. 
         - The operations that are performed are:
-            - 1. Add modulo 2^ (32)
-            - 2. D[i] – 32-bit message.
-            - 3. B[i] – 32-bit constant.
-            - 4. <<<n – Left shift by n bits.
+            - Add modulo 2^ (32)
+            - D[i] – 32-bit message.
+            - B[i] – 32-bit constant.
+            - <<<n – Left shift by n bits.
         - Auxiliary Functions: Auxiliary functions take three inputs (32-bits word) and give an output of 32-bit word. These functions apply logical AND, OR and XOR to the inputs. The non-linear process above is different for each round of the sub-block.
             - Round 1: (b AND c) OR ((NOT b) AND (d))
             - Round 2: (b AND d) OR (c AND (NOT d))
